@@ -10,9 +10,10 @@ using Android.Runtime;
 using Android.Support.Design.Widget;
 using Android.Support.V4.Widget;
 using Android.Support.V7.App;
-using Android.Support.V7.Widget;
 using Android.Util;
 using Android.Views;
+using Android.Widget;
+using Toolbar = Android.Support.V7.Widget.Toolbar;
 
 namespace InternalFunctionsNativeUI.Droid.Views
 {
@@ -23,6 +24,7 @@ namespace InternalFunctionsNativeUI.Droid.Views
         private NavigationView _navigationView;
         private Toolbar _toolbar;
         private ActionBarDrawerToggle _actionBarDrawerToggle;
+        private Button _signOutButton;
 
 
         public MainMenuView() { }
@@ -39,12 +41,13 @@ namespace InternalFunctionsNativeUI.Droid.Views
             return inflater.Inflate(Resource.Layout.main_menu_layout, container, false);
         }
 
-        public override void OnActivityCreated(Bundle savedInstancestate)
+        public override void OnActivityCreated(Bundle savedInstanceState)
         {
-            base.OnActivityCreated(savedInstancestate);
+            base.OnActivityCreated(savedInstanceState);
 
             _activity = Activity as AppCompatActivity;
 
+            _signOutButton = Activity.FindViewById<Button>(Resource.Id.signout_button);
             _toolbar = Activity.FindViewById<Toolbar>(Resource.Id.toolBar);
             _drawerLayout = Activity.FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             _navigationView = Activity.FindViewById<NavigationView>(Resource.Id.navigation_view);
@@ -55,7 +58,9 @@ namespace InternalFunctionsNativeUI.Droid.Views
             _activity.SetSupportActionBar(_toolbar);
             _activity.SupportActionBar.SetDisplayHomeAsUpEnabled(true);
             _activity.SupportActionBar.SetHomeButtonEnabled(true);
-            _activity.SupportActionBar.SetHomeAsUpIndicator(Resource.Drawable.ic_menu);
+            _activity.SupportActionBar.SetHomeAsUpIndicator(Resource.Drawable.menu);
+
+            _signOutButton.Click += NavigateToSignInView;
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item)
@@ -67,6 +72,15 @@ namespace InternalFunctionsNativeUI.Droid.Views
             }
 
             return base.OnOptionsItemSelected(item);
+        }
+
+        private void NavigateToSignInView(object sender, EventArgs e)
+        {
+            var fragmentTransaction = this.FragmentManager.BeginTransaction();
+            var signInView = new SignInView();
+
+            fragmentTransaction.Replace(Resource.Id.main_container, signInView);
+            fragmentTransaction.Commit();
         }
     }
 }

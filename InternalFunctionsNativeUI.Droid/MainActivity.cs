@@ -26,9 +26,9 @@ namespace InternalFunctionsNativeUI.Droid
             SetContentView(Resource.Layout.main_layout);
 
             var fragmentTransaction = this.FragmentManager.BeginTransaction();
-            var mainMenuView = new MainMenuView();
+            var signInView = new SignInView();
 
-            fragmentTransaction.Add(Resource.Id.main_container, mainMenuView);
+            fragmentTransaction.Add(Resource.Id.main_container, signInView);
             fragmentTransaction.Commit();
         }
 
