@@ -25,6 +25,7 @@ namespace InternalFunctionsNativeUI.Droid.Views
         private Toolbar _toolbar;
         private ActionBarDrawerToggle _actionBarDrawerToggle;
         private Button _signOutButton;
+        private Button _addActivityButton;
 
 
         public MainMenuView() { }
@@ -48,6 +49,7 @@ namespace InternalFunctionsNativeUI.Droid.Views
             _activity = Activity as AppCompatActivity;
 
             _signOutButton = Activity.FindViewById<Button>(Resource.Id.signout_button);
+            _addActivityButton = Activity.FindViewById<Button>(Resource.Id.add_activity_button);
             _toolbar = Activity.FindViewById<Toolbar>(Resource.Id.toolBar);
             _drawerLayout = Activity.FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             _navigationView = Activity.FindViewById<NavigationView>(Resource.Id.navigation_view);
@@ -58,9 +60,9 @@ namespace InternalFunctionsNativeUI.Droid.Views
             _activity.SetSupportActionBar(_toolbar);
             _activity.SupportActionBar.SetDisplayHomeAsUpEnabled(true);
             _activity.SupportActionBar.SetHomeButtonEnabled(true);
-            _activity.SupportActionBar.SetHomeAsUpIndicator(Resource.Drawable.menu);
 
             _signOutButton.Click += NavigateToSignInView;
+            _addActivityButton.Click += NavigateToFunctionsView;
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item)
@@ -72,6 +74,16 @@ namespace InternalFunctionsNativeUI.Droid.Views
             }
 
             return base.OnOptionsItemSelected(item);
+        }
+
+        private void NavigateToFunctionsView(object sender, EventArgs e)
+        {
+            var fragmentTransaction = this.FragmentManager.BeginTransaction();
+            var functionsView = new FunctionsView();
+
+            fragmentTransaction.Replace(Resource.Id.main_container, functionsView);
+            fragmentTransaction.AddToBackStack(null);
+            fragmentTransaction.Commit();
         }
 
         private void NavigateToSignInView(object sender, EventArgs e)

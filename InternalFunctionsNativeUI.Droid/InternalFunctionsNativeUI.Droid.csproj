@@ -59,6 +59,7 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\FunctionsView.cs" />
     <Compile Include="Views\MainMenuView.cs" />
     <Compile Include="Views\SignInView.cs" />
   </ItemGroup>
@@ -129,7 +130,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\main_menu_drawer_layout.axml">
+    <AndroidResource Include="Resources\layout\main_menu_navigation_layout.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -142,7 +143,9 @@
     <AndroidResource Include="Resources\layout\signin_layout.axml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\menu.svg" />
+    <AndroidResource Include="Resources\layout\functions_layout.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

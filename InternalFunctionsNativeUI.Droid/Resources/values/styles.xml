@@ -5,6 +5,7 @@
     <item name="colorPrimaryDark">?colorSystemBar</item>
     <item name="colorAccent">?colorEmphasize</item>
     <item name="android:textColorPrimary">?colorTextCommonLight</item>
+    <item name="android:textColorSecondary">?colorTextCommonLight</item>
     <item name="android:colorBackground">?colorBackgroundMain</item>
     <item name="android:windowBackground">?colorBackgroundMain</item>
     <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
