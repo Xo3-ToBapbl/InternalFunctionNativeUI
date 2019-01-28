@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">InternalFunctionsNativeUI.Droid</string>
-    <string name="action_settings">Settings</string>
+  <string name="app_name">Internal Functions Mobile</string>
+  <string name="action_settings">Settings</string>
+
+  <string name="opend_drawer_message">Drawer opened</string>
+  <string name="closed_drawer_message">Drawer closed</string>
 </resources>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+  <attr name="colorBackgroundMain" format="reference"/>
+  <attr name="colorBackgroundAdditional" format="reference"/>
+  <attr name="colorAppBar" format="reference"/>
+  <attr name="colorSystemBar" format="reference"/>
+  <attr name="colorEmphasize" format="reference"/>
+  <attr name="colorButtonMain" format="reference"/>
+  <attr name="colorButtonAdditional" format="reference"/>
+  <attr name="colorButtonFunctions" format="reference"/>
+  <attr name="colorButtonActivities" format="reference"/>
+  <attr name="colorTextCommon" format="reference"/>
+  <attr name="colorTextCommonLight" format="reference"/>
+</resources>

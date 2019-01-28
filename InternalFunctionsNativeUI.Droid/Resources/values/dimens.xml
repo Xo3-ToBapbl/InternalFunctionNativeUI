@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+  <!--Text sizes-->
+  <dimen name="text_size_avatar">50dp</dimen>
+  <dimen name="text_size_title">20dp</dimen>
+  <dimen name="text_size_hint">18dp</dimen>
+  <dimen name="text_size_common">16dp</dimen>
+  <dimen name="text_size_additional">14dp</dimen>
+  <dimen name="text_size_micro">12dp</dimen>
+
+  <!--Common button sizes-->
+  <dimen name="corner_radius_common_button_size">26dp</dimen>
+  <dimen name="height_common_button_size">52dp</dimen>
+
+  <!--Additional button sizes-->
+  <dimen name="corner_radius_additional_button_size">21dp</dimen>
+  <dimen name="height_additional_button_size">42dp</dimen>
+
+</resources>
