@@ -9,6 +9,12 @@ namespace InternalFunctionsNativeUI.iOS.Views
     [Register("SignInView")]
     public class SignInView : UIViewController
     {
+        private UILabel _appNameLabel;
+        private UIImageView _logoImageView;
+        private UIImage _logoImage;
+        private UIButton _signInButton;
+
+
         public SignInView() { }
 
 
@@ -20,59 +26,60 @@ namespace InternalFunctionsNativeUI.iOS.Views
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+            this.CreateControls();
+            this.AdjustControls();
 
             View.BackgroundColor = UIColor.White;
+            View.AddSubviews(_logoImageView, _appNameLabel, _signInButton);
 
-            var margins = View.LayoutMarginsGuide;
-            var signInButton = UIButton.FromType(UIButtonType.RoundedRect);
+            this.SetConstraints();
+        }
 
-            var imageView = new UIImageView();
-            var image = UIImage.FromBundle(Constants.Paths.Images.GodelLogoLight);
-            imageView.Image = image;
-            imageView.TranslatesAutoresizingMaskIntoConstraints = false;
+        private void SetConstraints()
+        {
+            var constraints = new[]
+            {
+                NSLayoutConstraint.Create(_logoImageView, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, View,NSLayoutAttribute.CenterY, 0.5f, 0f),
+                _logoImageView.HeightAnchor.ConstraintEqualTo(_logoImage.Size.Height),
+                _logoImageView.CenterXAnchor.ConstraintEqualTo(View.CenterXAnchor),
+                _logoImageView.WidthAnchor.ConstraintEqualTo(_logoImage.Size.Width),
 
-            var label = new UILabel();
-            label.Text = Constants.AppName;
-            label.TextColor = UIColor.Black;
-            label.TextAlignment = UITextAlignment.Center;
-            label.TranslatesAutoresizingMaskIntoConstraints = false;
-            signInButton.BackgroundColor = UIColor.Clear.FromHex(Constants.Colors.LightAzure);
-            signInButton.Layer.CornerRadius = 26f; 
-            signInButton.SetTitle("Sign In", UIControlState.Normal);
-            signInButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-            signInButton.TranslatesAutoresizingMaskIntoConstraints = false;
+                _appNameLabel.WidthAnchor.ConstraintEqualTo(View.WidthAnchor),
+                _appNameLabel.HeightAnchor.ConstraintGreaterThanOrEqualTo(30),
+                _appNameLabel.TopAnchor.ConstraintEqualTo(_logoImageView.BottomAnchor,10),
 
-            View.AddSubview(imageView);
-            View.AddSubview(label);
-            View.AddSubview(signInButton);
+                NSLayoutConstraint.Create(_signInButton, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, View, NSLayoutAttribute.CenterY, 1.5f, 0f),
+                _signInButton.HeightAnchor.ConstraintEqualTo(52f),
+                _signInButton.LeadingAnchor.ConstraintEqualTo(View.LeadingAnchor, 40f),
+                _signInButton.CenterXAnchor.ConstraintEqualTo(View.CenterXAnchor),
+            };
 
-            imageView.WidthAnchor.ConstraintEqualTo(image.Size.Width).Active = true;
-            imageView.HeightAnchor.ConstraintEqualTo(image.Size.Height).Active = true;
-            imageView.CenterXAnchor.ConstraintEqualTo(View.CenterXAnchor).Active = true;
-            NSLayoutConstraint.Create(
-                view1: imageView, 
-                attribute1: NSLayoutAttribute.CenterY, 
-                relation: NSLayoutRelation.Equal, 
-                view2: View,
-                attribute2: NSLayoutAttribute.CenterY, 
-                multiplier: 0.5f, 
-                constant: 0f).Active = true;
+            NSLayoutConstraint.ActivateConstraints(constraints);
+        }
 
-            label.WidthAnchor.ConstraintEqualTo(View.WidthAnchor).Active =  true;
-            label.HeightAnchor.ConstraintGreaterThanOrEqualTo(30).Active = true;
-            label.TopAnchor.ConstraintEqualTo(imageView.BottomAnchor).Active = true;
+        private void CreateControls()
+        {
+            _appNameLabel = new UILabel();
+            _logoImageView = new UIImageView();
+            _logoImage = UIImage.FromBundle(Constants.Paths.Images.GodelLogoLight);
+            _signInButton = UIButton.FromType(UIButtonType.RoundedRect);
+        }
 
-            signInButton.HeightAnchor.ConstraintEqualTo(52f).Active = true;
-            signInButton.LeadingAnchor.ConstraintEqualTo(View.LeadingAnchor, 40f).Active = true;
-            signInButton.CenterXAnchor.ConstraintEqualTo(View.CenterXAnchor).Active = true;
-            NSLayoutConstraint.Create(
-                view1: signInButton,
-                attribute1: NSLayoutAttribute.CenterY,
-                relation: NSLayoutRelation.Equal,
-                view2: View,
-                attribute2: NSLayoutAttribute.CenterY,
-                multiplier: 1.5f,
-                constant: 0f).Active = true;
+        private void AdjustControls()
+        {
+            _appNameLabel.Text = Constants.AppName;
+            _appNameLabel.TextColor = UIColor.Black;
+            _appNameLabel.TextAlignment = UITextAlignment.Center;
+            _appNameLabel.TranslatesAutoresizingMaskIntoConstraints = false;
+
+            _logoImageView.Image = _logoImage;
+            _logoImageView.TranslatesAutoresizingMaskIntoConstraints = false;
+
+            _signInButton.BackgroundColor = UIColor.Clear.FromHex(Constants.Colors.LightAzure);
+            _signInButton.Layer.CornerRadius = 26f;
+            _signInButton.SetTitle("Sign In", UIControlState.Normal);
+            _signInButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
+            _signInButton.TranslatesAutoresizingMaskIntoConstraints = false;
         }
     }
 }
