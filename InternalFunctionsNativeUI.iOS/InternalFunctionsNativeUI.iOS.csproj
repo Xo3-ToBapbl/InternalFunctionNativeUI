@@ -64,6 +64,10 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Controls\SideMenuManager.cs" />
+    <Compile Include="Controls\SideMenuTransition.cs" />
+    <Compile Include="Controls\UISideMenuNavigationController.cs" />
+    <Compile Include="Controls\UITableViewVibrantCell.cs" />
     <Compile Include="Extensions\UIExtenstions.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
