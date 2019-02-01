@@ -69,6 +69,36 @@
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Views\SignInView.cs" />
+    <BundleResource Include="Resources\Images\cancelDark.png" />
+    <BundleResource Include="Resources\Images\cancelDark%402x.png" />
+    <BundleResource Include="Resources\Images\cancelDark%403x.png" />
+    <BundleResource Include="Resources\Images\cancelLight.png" />
+    <BundleResource Include="Resources\Images\cancelLight%402x.png" />
+    <BundleResource Include="Resources\Images\cancelLight%403x.png" />
+    <BundleResource Include="Resources\Images\godelLogoDarkTheme.png" />
+    <BundleResource Include="Resources\Images\godelLogoDarkTheme%402x.png" />
+    <BundleResource Include="Resources\Images\godelLogoDarkTheme%403x.png" />
+    <BundleResource Include="Resources\Images\godelLogoLightTheme.png" />
+    <BundleResource Include="Resources\Images\godelLogoLightTheme%402x.png" />
+    <BundleResource Include="Resources\Images\godelLogoLightTheme%403x.png" />
+    <BundleResource Include="Resources\Images\launcher.png" />
+    <BundleResource Include="Resources\Images\launcher%402x.png" />
+    <BundleResource Include="Resources\Images\launcher%403x.png" />
+    <BundleResource Include="Resources\Images\menu-button.png" />
+    <BundleResource Include="Resources\Images\menu-button%402x.png" />
+    <BundleResource Include="Resources\Images\menu-button%403x.png" />
+    <BundleResource Include="Resources\Images\paidDark.png" />
+    <BundleResource Include="Resources\Images\paidDark%402x.png" />
+    <BundleResource Include="Resources\Images\paidDark%403x.png" />
+    <BundleResource Include="Resources\Images\paidLight.png" />
+    <BundleResource Include="Resources\Images\paidLight%402x.png" />
+    <BundleResource Include="Resources\Images\paidLight%403x.png" />
+    <BundleResource Include="Resources\Images\searchDark.png" />
+    <BundleResource Include="Resources\Images\searchDark%402x.png" />
+    <BundleResource Include="Resources\Images\searchDark%403x.png" />
+    <BundleResource Include="Resources\Images\searchLight.png" />
+    <BundleResource Include="Resources\Images\searchLight%402x.png" />
+    <BundleResource Include="Resources\Images\searchLight%403x.png" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Entitlements.plist" />
@@ -124,8 +154,6 @@
       <Visible>false</Visible>
     </ImageAsset>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

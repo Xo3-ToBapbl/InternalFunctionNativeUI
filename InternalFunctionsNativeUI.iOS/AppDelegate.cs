@@ -15,11 +15,10 @@ namespace InternalFunctionsNativeUI.iOS
 
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
-            Window = new UIWindow(UIScreen.MainScreen.Bounds);
-
-            var controller = new SignInView();
-
-            Window.RootViewController = controller;
+            Window = new UIWindow(UIScreen.MainScreen.Bounds)
+            {
+                RootViewController = new SignInView()
+            };
 
             Window.MakeKeyAndVisible();
 
