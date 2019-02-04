@@ -1,4 +1,5 @@
-﻿using CoreGraphics;
+﻿using System;
+using CoreGraphics;
 using Foundation;
 using InternalFunctionsNativeUI.iOS.Extensions;
 using InternalFunctionsNativeUI.iOS.Utilities;
@@ -35,28 +36,6 @@ namespace InternalFunctionsNativeUI.iOS.Views
             this.SetConstraints();
         }
 
-        private void SetConstraints()
-        {
-            var constraints = new[]
-            {
-                NSLayoutConstraint.Create(_logoImageView, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, View,NSLayoutAttribute.CenterY, 0.5f, 0f),
-                _logoImageView.HeightAnchor.ConstraintEqualTo(_logoImage.Size.Height),
-                _logoImageView.CenterXAnchor.ConstraintEqualTo(View.CenterXAnchor),
-                _logoImageView.WidthAnchor.ConstraintEqualTo(_logoImage.Size.Width),
-
-                _appNameLabel.WidthAnchor.ConstraintEqualTo(View.WidthAnchor),
-                _appNameLabel.HeightAnchor.ConstraintGreaterThanOrEqualTo(30),
-                _appNameLabel.TopAnchor.ConstraintEqualTo(_logoImageView.BottomAnchor,10),
-
-                NSLayoutConstraint.Create(_signInButton, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, View, NSLayoutAttribute.CenterY, 1.5f, 0f),
-                _signInButton.HeightAnchor.ConstraintEqualTo(52f),
-                _signInButton.LeadingAnchor.ConstraintEqualTo(View.LeadingAnchor, 40f),
-                _signInButton.CenterXAnchor.ConstraintEqualTo(View.CenterXAnchor),
-            };
-
-            NSLayoutConstraint.ActivateConstraints(constraints);
-        }
-
         private void CreateControls()
         {
             _appNameLabel = new UILabel();
@@ -80,6 +59,33 @@ namespace InternalFunctionsNativeUI.iOS.Views
             _signInButton.SetTitle("Sign In", UIControlState.Normal);
             _signInButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
             _signInButton.TranslatesAutoresizingMaskIntoConstraints = false;
+            _signInButton.TouchDown += SignInButtonOnTouchDown;
+        }
+
+        private void SignInButtonOnTouchDown(object sender, EventArgs e)
+        {
+        }
+
+        private void SetConstraints()
+        {
+            var constraints = new[]
+            {
+                NSLayoutConstraint.Create(_logoImageView, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, View,NSLayoutAttribute.CenterY, 0.5f, 0f),
+                _logoImageView.HeightAnchor.ConstraintEqualTo(_logoImage.Size.Height),
+                _logoImageView.CenterXAnchor.ConstraintEqualTo(View.CenterXAnchor),
+                _logoImageView.WidthAnchor.ConstraintEqualTo(_logoImage.Size.Width),
+
+                _appNameLabel.WidthAnchor.ConstraintEqualTo(View.WidthAnchor),
+                _appNameLabel.HeightAnchor.ConstraintGreaterThanOrEqualTo(30),
+                _appNameLabel.TopAnchor.ConstraintEqualTo(_logoImageView.BottomAnchor,10),
+
+                NSLayoutConstraint.Create(_signInButton, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, View, NSLayoutAttribute.CenterY, 1.5f, 0f),
+                _signInButton.HeightAnchor.ConstraintEqualTo(52f),
+                _signInButton.LeadingAnchor.ConstraintEqualTo(View.LeadingAnchor, 40f),
+                _signInButton.CenterXAnchor.ConstraintEqualTo(View.CenterXAnchor),
+            };
+
+            NSLayoutConstraint.ActivateConstraints(constraints);
         }
     }
 }
