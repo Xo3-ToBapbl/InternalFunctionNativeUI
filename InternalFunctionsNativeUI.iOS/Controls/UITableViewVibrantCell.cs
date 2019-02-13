@@ -6,11 +6,8 @@ namespace InternalFunctionsNativeUI.iOS.Controls
 	public class UITableViewVibrantCell : UITableViewCell
 	{
 		UIVisualEffectView _vibrancyView = new UIVisualEffectView();
-
 		UIVisualEffectView _vibrancySelectedBackgroundView = new UIVisualEffectView();
-
 		UIView _defaultSelectedBackgroundView;
-
 		UIBlurEffect _blurEffect;
 
 		public UIBlurEffect BlurEffect
@@ -27,16 +24,15 @@ namespace InternalFunctionsNativeUI.iOS.Controls
 			}
 		}
 
-		public UITableViewVibrantCell(IntPtr handle) : base(handle) {
+
+		public UITableViewVibrantCell(IntPtr handle) : base(handle)
+        {
 			Initialize();
 		}
 
-		public UITableViewVibrantCell()
-		{
-			Initialize();
-		}
 
-		void Initialize() {
+		void Initialize()
+        {
 			_vibrancyView.Frame = this.Bounds;
 			_vibrancyView.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
 
@@ -50,6 +46,10 @@ namespace InternalFunctionsNativeUI.iOS.Controls
 			_defaultSelectedBackgroundView = this.SelectedBackgroundView;
 		}
 
+		public UITableViewVibrantCell()
+		{
+			Initialize();
+		}
 
 		public override void LayoutSubviews()
 		{

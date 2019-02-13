@@ -18,7 +18,7 @@ namespace InternalFunctionsNativeUI.iOS
         {
             Window = new UIWindow(UIScreen.MainScreen.Bounds)
             {
-                RootViewController = new SignInView()
+                RootViewController = new UINavigationController(new SignInView())
             };
 
             Window.MakeKeyAndVisible();

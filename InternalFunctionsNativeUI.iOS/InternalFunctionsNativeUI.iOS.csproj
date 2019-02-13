@@ -72,6 +72,8 @@
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Utilities\Constants.cs" />
+    <Compile Include="Views\MenuView.cs" />
+    <Compile Include="Views\PartialViews\SideView.cs" />
     <Compile Include="Views\SignInView.cs" />
     <BundleResource Include="Resources\Images\cancelDark.png" />
     <BundleResource Include="Resources\Images\cancelDark%402x.png" />

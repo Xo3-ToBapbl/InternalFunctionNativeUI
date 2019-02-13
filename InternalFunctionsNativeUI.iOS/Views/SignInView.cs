@@ -16,7 +16,9 @@ namespace InternalFunctionsNativeUI.iOS.Views
         private UIButton _signInButton;
 
 
-        public SignInView() { }
+        public SignInView()
+        {
+        }
 
 
         public override void DidReceiveMemoryWarning()
@@ -30,6 +32,7 @@ namespace InternalFunctionsNativeUI.iOS.Views
             this.CreateControls();
             this.AdjustControls();
 
+            NavigationController.SetNavigationBarHidden(true, false);
             View.BackgroundColor = UIColor.White;
             View.AddSubviews(_logoImageView, _appNameLabel, _signInButton);
 
@@ -64,6 +67,7 @@ namespace InternalFunctionsNativeUI.iOS.Views
 
         private void SignInButtonOnTouchDown(object sender, EventArgs e)
         {
+            NavigationController.PushViewController(new MenuView(), true);
         }
 
         private void SetConstraints()
