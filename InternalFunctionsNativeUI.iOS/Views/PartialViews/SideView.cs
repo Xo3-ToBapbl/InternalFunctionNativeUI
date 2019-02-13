@@ -12,9 +12,8 @@ namespace InternalFunctionsNativeUI.iOS.Views.PartialViews
     [Register("SideView")]
     public class SideView : UIView
     {
-        private UIStackView _topStackView;
-        private UIStackView _midleStackView;
-        private UIStackView _bottomStackView;
+        private UIView _topView;
+        private UIView _bottomView;
 
 
         public SideView()
@@ -33,31 +32,44 @@ namespace InternalFunctionsNativeUI.iOS.Views.PartialViews
             this.CreateControls();
             this.AdjustControls();
 
-            AddSubviews(_topStackView, _midleStackView, _bottomStackView);
+            this.BackgroundColor = UIColor.White;
+
+            AddSubviews(_topView, _bottomView);
 
             this.SetConstraints();
         }
 
         private void CreateControls()
         {
-            _topStackView = new UIStackView();
-            _midleStackView = new UIStackView();
-            _bottomStackView = new UIStackView();
+            _topView = new UIView();
+            _bottomView = new UIView();
         }
 
         private void AdjustControls()
         {
-            _topStackView.BackgroundColor = UIColor.Clear.FromHex(Constants.Colors.LightAzure);
-            _midleStackView.BackgroundColor = UIColor.Gray;
-            _bottomStackView.BackgroundColor = UIColor.Clear.FromHex(Constants.Colors.LightAzure);
+            _topView.BackgroundColor = UIColor.Clear.FromHex(Constants.Colors.LightAzure);
+            _topView.TranslatesAutoresizingMaskIntoConstraints = false;
+
+            _bottomView.BackgroundColor = UIColor.Clear.FromHex(Constants.Colors.LightAzure);
+            _bottomView.TranslatesAutoresizingMaskIntoConstraints = false;
         }
 
         private void SetConstraints()
         {
-            //var constraints = new[]
-            //{
+            var constraints = new NSLayoutConstraint[]
+            {
+                NSLayoutConstraint.Create(_topView, NSLayoutAttribute.Height, NSLayoutRelation.Equal, this, NSLayoutAttribute.Height, 0.46f, 0), 
+                _topView.TopAnchor.ConstraintEqualTo(this.TopAnchor),
+                _topView.LeftAnchor.ConstraintEqualTo(this.LeftAnchor),
+                _topView.RightAnchor.ConstraintEqualTo(this.RightAnchor),
 
-            //};
+                NSLayoutConstraint.Create(_bottomView, NSLayoutAttribute.Height, NSLayoutRelation.Equal, this, NSLayoutAttribute.Height, 0.08f, 0),
+                _bottomView.BottomAnchor.ConstraintEqualTo(this.BottomAnchor),
+                _bottomView.LeftAnchor.ConstraintEqualTo(this.LeftAnchor),
+                _bottomView.RightAnchor.ConstraintEqualTo(this.RightAnchor),
+            };
+
+            NSLayoutConstraint.ActivateConstraints(constraints);
         }
     }
 }
