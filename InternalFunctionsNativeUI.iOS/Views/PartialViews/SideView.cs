@@ -14,6 +14,7 @@ namespace InternalFunctionsNativeUI.iOS.Views.PartialViews
     {
         private UIView _topView;
         private UIView _bottomView;
+        private UIView _circleView;
 
 
         public SideView()
@@ -29,14 +30,15 @@ namespace InternalFunctionsNativeUI.iOS.Views.PartialViews
 
         void Initialize()
         {
-            this.CreateControls();
-            this.AdjustControls();
+            //this.CreateControls();
+            //this.AdjustControls();
 
             this.BackgroundColor = UIColor.White;
 
-            AddSubviews(_topView, _bottomView);
+            //AddSubviews(_topView, _bottomView);
+            AddSubviews(new CircleView());
 
-            this.SetConstraints();
+            //this.SetConstraints();
         }
 
         private void CreateControls()
@@ -47,6 +49,7 @@ namespace InternalFunctionsNativeUI.iOS.Views.PartialViews
 
         private void AdjustControls()
         {
+            _topView.Add(new CircleView());
             _topView.BackgroundColor = UIColor.Clear.FromHex(Constants.Colors.LightAzure);
             _topView.TranslatesAutoresizingMaskIntoConstraints = false;
 
@@ -62,6 +65,9 @@ namespace InternalFunctionsNativeUI.iOS.Views.PartialViews
                 _topView.TopAnchor.ConstraintEqualTo(this.TopAnchor),
                 _topView.LeftAnchor.ConstraintEqualTo(this.LeftAnchor),
                 _topView.RightAnchor.ConstraintEqualTo(this.RightAnchor),
+
+                _circleView.CenterXAnchor.ConstraintEqualTo(_topView.CenterXAnchor),
+                _circleView.CenterYAnchor.ConstraintEqualTo(_topView.CenterYAnchor),
 
                 NSLayoutConstraint.Create(_bottomView, NSLayoutAttribute.Height, NSLayoutRelation.Equal, this, NSLayoutAttribute.Height, 0.08f, 0),
                 _bottomView.BottomAnchor.ConstraintEqualTo(this.BottomAnchor),

@@ -22,8 +22,11 @@ namespace InternalFunctionsNativeUI.iOS.Views
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+        }
 
-            View = new SideView();
+        public override void LoadView()
+        {
+            View = new CircleView();
         }
     }
 }
