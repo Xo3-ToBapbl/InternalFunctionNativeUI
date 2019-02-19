@@ -16,15 +16,8 @@ namespace InternalFunctionsNativeUI.iOS.Views
         private UIButton _signInButton;
 
 
-        public SignInView()
-        {
-        }
+        public SignInView(){ }
 
-
-        public override void DidReceiveMemoryWarning()
-        {
-            base.DidReceiveMemoryWarning();
-        }
 
         public override void ViewDidLoad()
         {

@@ -27,6 +27,12 @@ namespace InternalFunctionsNativeUI.iOS.Views.PartialViews
             BackgroundColor = UIColor.Green;
         }
 
+
+        public override void DrawRect(CGRect area, UIViewPrintFormatter formatter)
+        {
+            base.DrawRect(area, formatter);
+        }
+
         public override void Draw(CGRect rect)
         {
             base.Draw(rect);
