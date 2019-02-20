@@ -8,6 +8,7 @@
         public static class Colors
         {
             public const int LightAzure = 0x75C8D2;
+            public const int LightGreen = 0x8DC63F;
         }
 
         public static class Paths

@@ -24,13 +24,7 @@ namespace InternalFunctionsNativeUI.iOS.Views.PartialViews
 
         void Initialize()
         {
-            BackgroundColor = UIColor.Green;
-        }
-
-
-        public override void DrawRect(CGRect area, UIViewPrintFormatter formatter)
-        {
-            base.DrawRect(area, formatter);
+            BackgroundColor = UIColor.Clear;
         }
 
         public override void Draw(CGRect rect)
@@ -39,14 +33,13 @@ namespace InternalFunctionsNativeUI.iOS.Views.PartialViews
 
             using (var graphicContext = UIGraphics.GetCurrentContext())
             {
-                //UIColor.Clear.FromHex(Constants.Colors.LightAzure).SetFill();
-                UIColor.Red.SetFill();
+                UIColor.Clear.FromHex(Constants.Colors.LightGreen).SetFill();
 
                 var path = new CGPath();
-                path.AddArc(Bounds.GetMidX(), Bounds.GetMidY(), 50f, 0, 2.0f*(float)Math.PI, true);
+                path.AddArc(Bounds.GetMidX(), Bounds.GetMidY(), 60f, 0, 2.0f*(float)Math.PI, true);
 
                 graphicContext.AddPath(path);
-                graphicContext.DrawPath(CGPathDrawingMode.FillStroke);
+                graphicContext.DrawPath(CGPathDrawingMode.Fill);
             }
         }
     }
