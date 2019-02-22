@@ -8,8 +8,11 @@ namespace InternalFunctionsNativeUI.iOS.Controls
     public class UISideMenuNavigationController : UINavigationController
     {
         public SideMenuManager SideMenuManager { get; set;}
-        
+
         public bool LeftSide { get; set; }
+
+        public UIColor OriginalMenuBackgroundColor { get; set; }
+
 
         public UISideMenuNavigationController(SideMenuManager sideMenuManager, UIViewController rootViewController, bool leftSide = true) : base (rootViewController)
         {
@@ -27,7 +30,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             }
         }
 
-        public UIColor OriginalMenuBackgroundColor { get; set; }
+
 
         public override void AwakeFromNib()
         {
@@ -55,7 +58,6 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                 DismissViewController(false, () => this.View.Hidden = false);
             }
         }
-
 
         public override void ViewWillDisappear(bool animated)
         {
@@ -147,17 +149,17 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                 return;
             }
 
-	    UINavigationController presentingViewController = null;
+	        UINavigationController presentingViewController = null;
 
-	    if (PresentingViewController is UINavigationController)
-	    {
-	    	presentingViewController = PresentingViewController as UINavigationController;
-	    }
-	    else if (PresentingViewController is UITabBarController)
-	    {
-	    	presentingViewController = ((UITabBarController)PresentingViewController).SelectedViewController as UINavigationController;
-	    }
-			
+	        if (PresentingViewController is UINavigationController)
+	        {
+	        	presentingViewController = PresentingViewController as UINavigationController;
+	        }
+	        else if (PresentingViewController is UITabBarController)
+	        {
+	        	presentingViewController = ((UITabBarController)PresentingViewController).SelectedViewController as UINavigationController;
+	        }
+		    	
             if (presentingViewController == null)
             {
                 PresentViewController(viewController, animated, null);
