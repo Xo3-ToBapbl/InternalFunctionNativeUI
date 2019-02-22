@@ -50,7 +50,7 @@ namespace InternalFunctionsNativeUI.iOS.Views
             _logoImageView.Image = _logoImage;
             _logoImageView.TranslatesAutoresizingMaskIntoConstraints = false;
 
-            _signInButton.BackgroundColor = UIColor.Clear.FromHex(Constants.Colors.LightAzure);
+            _signInButton.BackgroundColor = UIColor.Clear.FromHex(Colors.LightAzure);
             _signInButton.Layer.CornerRadius = 26f;
             _signInButton.SetTitle("Sign In", UIControlState.Normal);
             _signInButton.SetTitleColor(UIColor.Black, UIControlState.Normal);

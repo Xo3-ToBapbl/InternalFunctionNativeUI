@@ -71,7 +71,9 @@
     <Compile Include="Extensions\UIExtenstions.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="Utilities\Colors.cs" />
     <Compile Include="Utilities\Constants.cs" />
+    <Compile Include="Utilities\Dimens.cs" />
     <Compile Include="Views\MenuView.cs" />
     <Compile Include="Views\PartialViews\CircleView.cs" />
     <Compile Include="Views\PartialViews\SideView.cs" />

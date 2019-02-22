@@ -22,6 +22,7 @@ namespace InternalFunctionsNativeUI.iOS.Views.PartialViews
             Initialize();
         }
 
+
         void Initialize()
         {
             BackgroundColor = UIColor.Clear;
@@ -33,7 +34,7 @@ namespace InternalFunctionsNativeUI.iOS.Views.PartialViews
 
             using (var graphicContext = UIGraphics.GetCurrentContext())
             {
-                UIColor.Clear.FromHex(Constants.Colors.LightGreen).SetFill();
+                UIColor.Clear.FromHex(Colors.LightGreen).SetFill();
 
                 var path = new CGPath();
                 path.AddArc(Bounds.GetMidX(), Bounds.GetMidY(), 60f, 0, 2.0f*(float)Math.PI, true);
