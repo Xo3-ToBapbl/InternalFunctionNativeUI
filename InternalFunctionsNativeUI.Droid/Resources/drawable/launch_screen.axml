@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+            android:opacity="opaque">
+
+  <item>
+    <color android:color="#F9F9FA"/>
+  </item>
+
+  <item android:gravity="center"
+        android:height="200dp"
+        android:width="200dp">
+
+    <bitmap
+      android:src="@drawable/launcher"
+      android:tileMode="disabled"/>
+  </item>
+
+</layer-list>
