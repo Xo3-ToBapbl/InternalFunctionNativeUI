@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using System.Threading.Tasks;
 using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Support.Design.Widget;
 using Android.Support.V4.Widget;
 using Android.Support.V7.App;
-using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
 
-namespace InternalFunctionsNativeUI.Droid.Views
+namespace InternalFunctionsNativeUI.Droid.Fragments
 {
-    public class MainMenuView : Fragment
+    public class HomeFragment : Fragment
     {
         private AppCompatActivity _activity;
         private DrawerLayout _drawerLayout;
@@ -28,7 +22,7 @@ namespace InternalFunctionsNativeUI.Droid.Views
         private Button _addActivityButton;
 
 
-        public MainMenuView() { }
+        public HomeFragment() { }
 
 
         public override void OnCreate(Bundle savedInstanceState)
@@ -39,7 +33,7 @@ namespace InternalFunctionsNativeUI.Droid.Views
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            return inflater.Inflate(Resource.Layout.main_menu_layout, container, false);
+            return inflater.Inflate(Resource.Layout.home_layout, container, false);
         }
 
         public override void OnActivityCreated(Bundle savedInstanceState)
@@ -57,9 +51,9 @@ namespace InternalFunctionsNativeUI.Droid.Views
             _drawerLayout.AddDrawerListener(_actionBarDrawerToggle);
             _actionBarDrawerToggle.SyncState();
 
-            _activity.SetSupportActionBar(_toolbar);
-            _activity.SupportActionBar.SetDisplayHomeAsUpEnabled(true);
-            _activity.SupportActionBar.SetHomeButtonEnabled(true);
+            _activity?.SetSupportActionBar(_toolbar);
+            _activity?.SupportActionBar.SetDisplayHomeAsUpEnabled(true);
+            _activity?.SupportActionBar.SetHomeButtonEnabled(true);
 
             _signOutButton.Click += NavigateToSignInView;
             _addActivityButton.Click += NavigateToFunctionsView;
@@ -79,20 +73,36 @@ namespace InternalFunctionsNativeUI.Droid.Views
         private void NavigateToFunctionsView(object sender, EventArgs e)
         {
             var fragmentTransaction = this.FragmentManager.BeginTransaction();
-            var functionsView = new FunctionsView();
+            var functionsView = new PreviousActivitiesFragment();
 
+            fragmentTransaction.SetCustomAnimations(
+                Resource.Animator.slide_in_left,
+                Resource.Animator.slide_out_left, 
+                Resource.Animator.slide_in_right,
+                Resource.Animator.slide_out_right);
             fragmentTransaction.Replace(Resource.Id.main_container, functionsView);
             fragmentTransaction.AddToBackStack(null);
             fragmentTransaction.Commit();
         }
 
-        private void NavigateToSignInView(object sender, EventArgs e)
+        private async void NavigateToSignInView(object sender, EventArgs e)
         {
-            var fragmentTransaction = this.FragmentManager.BeginTransaction();
-            var signInView = new SignInView();
+            await CloseDrawer();
 
+            var fragmentTransaction = this.FragmentManager.BeginTransaction();
+            var signInView = new SignInFragment();
+
+            fragmentTransaction.SetCustomAnimations(
+                Resource.Animator.slide_in_right,
+                Resource.Animator.slide_out_right); 
             fragmentTransaction.Replace(Resource.Id.main_container, signInView);
             fragmentTransaction.Commit();
+        }
+
+        private async Task CloseDrawer()
+        {
+            _drawerLayout.CloseDrawer(Android.Support.V4.View.GravityCompat.Start);
+            await Task.Delay(200);
         }
     }
 }
