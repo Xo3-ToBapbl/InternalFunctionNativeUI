@@ -8,7 +8,12 @@ namespace InternalFunctionsNativeUI.iOS.Controls
 {
     public class SideMenuTransition : UIPercentDrivenInteractiveTransition
     {
+        SideMenuAnimatedTransitioning _animatedTransitioning;
+        SideMenuTransitioningDelegate _transitioningDelegate;
+
+
         public SideMenuManager SideMenuManager { get; set; }
+
 
         public SideMenuTransition(SideMenuManager sideMenuManager)
         {
@@ -25,65 +30,32 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             base.Dispose(disposing);
         }
 
-        SideMenuAnimatedTransitioning animatedTransitioning;
-        public SideMenuAnimatedTransitioning AnimatedTransitioning
-        {
-            get
-            {
-                if (animatedTransitioning == null)
-                    animatedTransitioning = new SideMenuAnimatedTransitioning(this);
+        public SideMenuAnimatedTransitioning AnimatedTransitioning => 
+            _animatedTransitioning ?? (_animatedTransitioning = new SideMenuAnimatedTransitioning(this));
 
-                return animatedTransitioning;
-            }
-        }
+        public SideMenuTransitioningDelegate TransitioningDelegate => 
+            _transitioningDelegate ?? (_transitioningDelegate = new SideMenuTransitioningDelegate(this));
 
-        SideMenuTransitioningDelegate transitioningDelegate;
-        public SideMenuTransitioningDelegate TransitioningDelegate
-        {
-            get
-            {
-                if (transitioningDelegate == null)
-                    transitioningDelegate = new SideMenuTransitioningDelegate(this);
-
-                return transitioningDelegate;
-            }
-        }
-
-		public bool Presenting { get; private set; }
-		bool interactive = false;
-        UIView originalSuperview;
-        bool switchMenus = false;
+        public bool Presenting { get; private set; }
+		bool _interactive = false;
+        UIView _originalSuperview;
+        bool _switchMenus = false;
 
         public UIRectEdge PresentDirection = UIRectEdge.Left;
         public UIView TapView;
         public UIView StatusBarView;
 
-        UIViewController viewControllerForPresentedMenu
-        {
-            get
-            {
-                return SideMenuManager.LeftNavigationController?.PresentingViewController != null
-                    ? SideMenuManager.LeftNavigationController?.PresentingViewController
-                    : SideMenuManager.RightNavigationController?.PresentingViewController;
-            }
-        }
+        UIViewController ViewControllerForPresentedMenu =>
+            SideMenuManager.LeftNavigationController?.PresentingViewController ?? SideMenuManager.RightNavigationController?.PresentingViewController;
 
-        UIViewController visibleViewController
-        {
-            get
-            {
-                return GetVisibleViewControllerFromViewController(UIApplication.SharedApplication.KeyWindow?.RootViewController);
-            }
-        }
+        UIViewController VisibleViewController => GetVisibleViewControllerFromViewController(UIApplication.SharedApplication.KeyWindow?.RootViewController);
 
-		UIViewController GetVisibleViewControllerFromViewController(UIViewController viewController)
+        UIViewController GetVisibleViewControllerFromViewController(UIViewController viewController)
         {
-            var navigationController = viewController as UINavigationController;
-            if (navigationController != null)
+            if (viewController is UINavigationController navigationController)
                 return GetVisibleViewControllerFromViewController(navigationController.VisibleViewController);
 
-            var tabBarController = viewController as UITabBarController;
-            if (tabBarController != null)
+            if (viewController is UITabBarController tabBarController)
                 return GetVisibleViewControllerFromViewController(tabBarController.SelectedViewController);
 
             var presentedViewController = viewController?.PresentedViewController;
@@ -108,7 +80,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
         public void HandlePresentMenuPan(UIPanGestureRecognizer pan)
         {
             // how much distance have we panned in reference to the parent view?
-            var view = viewControllerForPresentedMenu != null ? viewControllerForPresentedMenu?.View : pan.View;
+            var view = ViewControllerForPresentedMenu != null ? ViewControllerForPresentedMenu?.View : pan.View;
             if (view == null)
             {
                 return;
@@ -120,7 +92,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             view.Transform = transform;
 
             // do some math to translate this to a percentage based value
-            if (!interactive) {
+            if (!_interactive) {
                 if (translation.X == 0) {
                     return; // not sure which way the user is swiping yet, so do nothing
                 }
@@ -132,10 +104,10 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                 var menuViewController = this.PresentDirection == UIRectEdge.Left
                     ? SideMenuManager.LeftNavigationController
                     : SideMenuManager.RightNavigationController;
-                if (menuViewController != null && visibleViewController != null)
+                if (menuViewController != null && VisibleViewController != null)
                 {
-                    interactive = true;
-                    visibleViewController.PresentViewController(menuViewController, true, null);
+                    _interactive = true;
+                    VisibleViewController.PresentViewController(menuViewController, true, null);
                 }
             }
 
@@ -151,12 +123,12 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                     }
                     else if (distance > 0 && this.PresentDirection == UIRectEdge.Right && SideMenuManager.LeftNavigationController != null) {
                         this.PresentDirection = UIRectEdge.Left;
-                        switchMenus = true;
+                        _switchMenus = true;
                         this.CancelInteractiveTransition();
                     }
                     else if (distance < 0 && this.PresentDirection == UIRectEdge.Left && SideMenuManager.RightNavigationController != null) {
                         this.PresentDirection = UIRectEdge.Right;
-                        switchMenus = true;
+                        _switchMenus = true;
                         this.CancelInteractiveTransition();
                     }
                     else
@@ -166,7 +138,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                     break;
 
                 default:
-                    interactive = false;
+                    _interactive = false;
                     view.Transform = CGAffineTransform.MakeIdentity();
                     var velocity = pan.VelocityInView(pan.View).X * direction;
                     view.Transform = transform;
@@ -196,14 +168,14 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             switch (pan.State)
             {
                 case UIGestureRecognizerState.Began:
-                    interactive = true;
-                    viewControllerForPresentedMenu?.DismissViewController(true, null);
+                    _interactive = true;
+                    ViewControllerForPresentedMenu?.DismissViewController(true, null);
                     break;
                 case UIGestureRecognizerState.Changed:
                     this.UpdateInteractiveTransition((float)Math.Max(Math.Min(distance, 1), 0));
                     break;
                 default:
-                    interactive = false;
+                    _interactive = false;
                     var velocity = pan.VelocityInView(pan.View).X * direction;
                     if (velocity >= 100 || velocity >= -50 && distance >= 0.5)
                     {
@@ -225,7 +197,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
 
 		void HandleHideMenuTap(UITapGestureRecognizer tap)
         {
-            viewControllerForPresentedMenu?.DismissViewController(true, null);
+            ViewControllerForPresentedMenu?.DismissViewController(true, null);
         }
 
         public void HideMenuStart()
@@ -233,7 +205,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             if(menuObserver != null)
                 NSNotificationCenter.DefaultCenter.RemoveObserver(menuObserver);
 
-            var mainViewController = this.viewControllerForPresentedMenu;
+            var mainViewController = this.ViewControllerForPresentedMenu;
             var menuView = this.PresentDirection == UIRectEdge.Left ? SideMenuManager.LeftNavigationController?.View : SideMenuManager.RightNavigationController?.View;
             if (mainViewController == null || menuView == null)
                 return;
@@ -306,7 +278,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
 
         public void HideMenuComplete()
         {
-            var mainViewController = this.viewControllerForPresentedMenu;
+            var mainViewController = this.ViewControllerForPresentedMenu;
             var menuView = this.PresentDirection == UIRectEdge.Left ? SideMenuManager.LeftNavigationController?.View : SideMenuManager.RightNavigationController?.View;
             if (mainViewController == null || menuView == null)
             {
@@ -318,22 +290,21 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             mainViewController.View.MotionEffects = new List<UIMotionEffect>().ToArray();
             mainViewController.View.Layer.ShadowOpacity = 0;
             menuView.Layer.ShadowOpacity = 0;
-            var topNavigationController = mainViewController as UINavigationController;
-            if (topNavigationController != null)
+            if (mainViewController is UINavigationController topNavigationController)
             {
                 topNavigationController.InteractivePopGestureRecognizer.Enabled = true;
             }
 
-            originalSuperview?.AddSubview(mainViewController.View);
+            _originalSuperview?.AddSubview(mainViewController.View);
         }
 
         public void PresentMenuStart(CGSize? size = null)
         {
             if (size == null)
-                size = SideMenuManager.appScreenRect.Size;
+                size = SideMenuManager.AppScreenRect.Size;
 
             var menuView = this.PresentDirection == UIRectEdge.Left ? SideMenuManager.LeftNavigationController?.View : SideMenuManager.RightNavigationController?.View;
-            var mainViewController = this.viewControllerForPresentedMenu;
+            var mainViewController = this.ViewControllerForPresentedMenu;
             if (menuView == null || mainViewController == null)
                 return;
 
@@ -400,7 +371,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             //TODO: Review this
             menuObserver = NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, (_) => TransitioningDelegate.ApplicationDidEnterBackgroundNotification());
 
-            var mainViewController = this.viewControllerForPresentedMenu;
+            var mainViewController = this.ViewControllerForPresentedMenu;
             if (mainViewController == null)
                 return;
 
@@ -409,13 +380,19 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                 case SideMenuManager.MenuPresentMode.MenuDissolveIn:
                 case SideMenuManager.MenuPresentMode.ViewSlideInOut:
                     if (SideMenuManager.ParallaxStrength != 0) {
-                        var horizontal = new UIInterpolatingMotionEffect(keyPath: "center.x", type: UIInterpolatingMotionEffectType.TiltAlongHorizontalAxis);
-                        horizontal.MinimumRelativeValue = NSNumber.FromInt32(-SideMenuManager.ParallaxStrength);
+                        var horizontal = new UIInterpolatingMotionEffect(keyPath: "center.x",
+                            type: UIInterpolatingMotionEffectType.TiltAlongHorizontalAxis)
+                        {
+                            MinimumRelativeValue = NSNumber.FromInt32(-SideMenuManager.ParallaxStrength)
+                        };
                         horizontal.MinimumRelativeValue = NSNumber.FromInt32(SideMenuManager.ParallaxStrength);
 
-                        var vertical = new UIInterpolatingMotionEffect(keyPath: "center.y", type: UIInterpolatingMotionEffectType.TiltAlongVerticalAxis);
-                        vertical.MinimumRelativeValue = NSNumber.FromInt32(- SideMenuManager.ParallaxStrength);
-                        vertical.MaximumRelativeValue = NSNumber.FromInt32(SideMenuManager.ParallaxStrength);
+                        var vertical = new UIInterpolatingMotionEffect(keyPath: "center.y",
+                            type: UIInterpolatingMotionEffectType.TiltAlongVerticalAxis)
+                        {
+                            MinimumRelativeValue = NSNumber.FromInt32(-SideMenuManager.ParallaxStrength),
+                            MaximumRelativeValue = NSNumber.FromInt32(SideMenuManager.ParallaxStrength)
+                        };
 
                         var group = new UIMotionEffectGroup();
                         group.MotionEffects = new UIMotionEffect[] { horizontal, vertical };
@@ -426,8 +403,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                     break;
             }
 
-            var topNavigationController = mainViewController as UINavigationController;
-            if (topNavigationController != null) {
+            if (mainViewController is UINavigationController topNavigationController) {
                 topNavigationController.InteractivePopGestureRecognizer.Enabled = false;
             }
         }
@@ -481,8 +457,10 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                 // prepare menu items to slide in
                 if (_sideMenuTransition.Presenting)
                 {
-                    var tapView = new UIView();
-                    tapView.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
+                    var tapView = new UIView
+                    {
+                        AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
+                    };
                     var exitPanGesture = new UIPanGestureRecognizer();
                     exitPanGesture.AddTarget(/*SideMenuTransition.Current, */() => _sideMenuTransition.HandleHideMenuPan(exitPanGesture));
                     var exitTapGesture = new UITapGestureRecognizer();
@@ -491,7 +469,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                     tapView.AddGestureRecognizer(exitTapGesture);
                     _sideMenuTransition.TapView = tapView;
 
-                    _sideMenuTransition.originalSuperview = topView.Superview;
+                    _sideMenuTransition._originalSuperview = topView.Superview;
 
                     // add the both views to our view controller
                     switch (_sideMenuTransition.SideMenuManager.PresentMode)
@@ -514,14 +492,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                     {
                         var blackBar = new UIView();
                         var menuShrinkBackgroundColor = _sideMenuTransition.SideMenuManager.AnimationBackgroundColor;
-                        if (menuShrinkBackgroundColor != null)
-                        {
-                            blackBar.BackgroundColor = menuShrinkBackgroundColor;
-                        }
-                        else
-                        {
-                            blackBar.BackgroundColor = UIColor.Black;
-                        }
+                        blackBar.BackgroundColor = menuShrinkBackgroundColor ?? UIColor.Black;
                         blackBar.UserInteractionEnabled = false;
                         container.AddSubview(blackBar);
                         _sideMenuTransition.StatusBarView = blackBar;
@@ -532,9 +503,9 @@ namespace InternalFunctionsNativeUI.iOS.Controls
 
                 // perform the animation!
                 var duration = TransitionDuration(transitionContext);
-                var options = _sideMenuTransition.interactive ? UIViewAnimationOptions.CurveLinear : UIViewAnimationOptions.CurveEaseInOut;
+                var options = _sideMenuTransition._interactive ? UIViewAnimationOptions.CurveLinear : UIViewAnimationOptions.CurveEaseInOut;
                 UIView.Animate(duration, 0, options,
-                    animation: () =>
+                    () =>
                     {
                         if (_sideMenuTransition.Presenting)
                         {
@@ -551,7 +522,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                     // tell our transitionContext object that we've finished animating
                     if (transitionContext.TransitionWasCancelled)
                         {
-                            var viewControllerForPresentedMenu = _sideMenuTransition.viewControllerForPresentedMenu;
+                            var viewControllerForPresentedMenu = _sideMenuTransition.ViewControllerForPresentedMenu;
 
                             if (_sideMenuTransition.Presenting)
                             {
@@ -566,9 +537,9 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                             transitionContext.CompleteTransition(false);
 
 
-                            if (_sideMenuTransition.switchMenus)
+                            if (_sideMenuTransition._switchMenus)
                             {
-                                _sideMenuTransition.switchMenus = false;
+                                _sideMenuTransition._switchMenus = false;
                                 viewControllerForPresentedMenu?.PresentViewController(
                                     _sideMenuTransition.PresentDirection == UIRectEdge.Left
                                         ? _sideMenuTransition.SideMenuManager.LeftNavigationController
@@ -639,7 +610,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             }
 
             // return the animator when presenting a viewcontroller
-            // rememeber that an animator (or animation controller) is any object that aheres to the UIViewControllerAnimatedTransitioning protocol
+            // remember that an animator (or animation controller) is any object that aheres to the UIViewControllerAnimatedTransitioning protocol
             public override IUIViewControllerAnimatedTransitioning GetAnimationControllerForPresentedController(UIViewController presented, UIViewController presentingViewController, UIViewController source)
             {
                 _sideMenuTransition.Presenting = true;

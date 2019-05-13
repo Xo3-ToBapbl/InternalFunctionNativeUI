@@ -22,8 +22,9 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <MtouchArch>x86_64</MtouchArch>
-    <MtouchLink>None</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
+    <MtouchSdkVersion>12.1</MtouchSdkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -64,20 +65,20 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Controls\SideMenuManager.cs" />
-    <Compile Include="Controls\SideMenuTransition.cs" />
-    <Compile Include="Controls\UISideMenuNavigationController.cs" />
-    <Compile Include="Controls\UITableViewVibrantCell.cs" />
+    <Compile Include="ViewControllers\PreviousActivitiesViewController.cs" />
+    <Compile Include="ViewControllers\SideMenuController\SideMenuManager.cs" />
+    <Compile Include="ViewControllers\SideMenuController\SideMenuTransition.cs" />
+    <Compile Include="ViewControllers\SideMenuController\SideMenuNavigationController.cs" />
     <Compile Include="Extensions\UIExtenstions.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Utilities\Colors.cs" />
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Utilities\Dimens.cs" />
-    <Compile Include="Views\MenuView.cs" />
-    <Compile Include="Views\PartialViews\CircleView.cs" />
-    <Compile Include="Views\PartialViews\SideView.cs" />
-    <Compile Include="Views\SignInView.cs" />
+    <Compile Include="ViewControllers\HomeViewController.cs" />
+    <Compile Include="ViewControllers\SideMenuViewController.cs" />
+    <Compile Include="Views\CircleView.cs" />
+    <Compile Include="ViewControllers\SignInViewController.cs" />
     <BundleResource Include="Resources\Images\cancelDark.png" />
     <BundleResource Include="Resources\Images\cancelDark%402x.png" />
     <BundleResource Include="Resources\Images\cancelDark%403x.png" />
@@ -93,9 +94,9 @@
     <BundleResource Include="Resources\Images\launcher.png" />
     <BundleResource Include="Resources\Images\launcher%402x.png" />
     <BundleResource Include="Resources\Images\launcher%403x.png" />
-    <BundleResource Include="Resources\Images\menu-button.png" />
-    <BundleResource Include="Resources\Images\menu-button%402x.png" />
-    <BundleResource Include="Resources\Images\menu-button%403x.png" />
+    <BundleResource Include="Resources\menu-button.png" />
+    <BundleResource Include="Resources\menu-button%402x.png" />
+    <BundleResource Include="Resources\menu-button%403x.png" />
     <BundleResource Include="Resources\Images\paidDark.png" />
     <BundleResource Include="Resources\Images\paidDark%402x.png" />
     <BundleResource Include="Resources\Images\paidDark%403x.png" />
@@ -108,10 +109,13 @@
     <BundleResource Include="Resources\Images\searchLight.png" />
     <BundleResource Include="Resources\Images\searchLight%402x.png" />
     <BundleResource Include="Resources\Images\searchLight%403x.png" />
-    <None Include="Info.plist" />
+    <None Include="Info.plist">
+      <SubType>Designer</SubType>
+    </None>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Entitlements.plist" />
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -163,6 +167,11 @@
       <Visible>false</Visible>
     </ImageAsset>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\InternalFunctionNativeUI.Core\InternalFunctionNativeUI.Core.csproj">
+      <Project>{fecd3609-9b79-4f2e-97f5-8bc18877faf2}</Project>
+      <Name>InternalFunctionNativeUI.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

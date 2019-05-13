@@ -5,16 +5,15 @@ using UIKit;
 
 namespace InternalFunctionsNativeUI.iOS.Controls
 {
-    public class UISideMenuNavigationController : UINavigationController
+    public class SideMenuNavigationController : UINavigationController
     {
+        public bool LeftSide { get; set; }
+        public UIColor OriginalMenuBackgroundColor { get; set; }
         public SideMenuManager SideMenuManager { get; set;}
 
-        public bool LeftSide { get; set; }
 
-        public UIColor OriginalMenuBackgroundColor { get; set; }
-
-
-        public UISideMenuNavigationController(SideMenuManager sideMenuManager, UIViewController rootViewController, bool leftSide = true) : base (rootViewController)
+        public SideMenuNavigationController(SideMenuManager sideMenuManager, UIViewController rootViewController, bool leftSide = true) : 
+            base (rootViewController)
         {
             SideMenuManager = sideMenuManager;
 
@@ -31,7 +30,6 @@ namespace InternalFunctionsNativeUI.iOS.Controls
         }
 
 
-
         public override void AwakeFromNib()
         {
             base.AwakeFromNib();
@@ -40,11 +38,6 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             // likely because the transition completes and the presentingViewController is added back
             // into view for the default transition style.
             this.ModalPresentationStyle = UIModalPresentationStyle.OverFullScreen;
-        }
-
-        public override void ViewDidLoad()
-        {
-            base.ViewDidLoad();
         }
 
         public override void ViewDidAppear(bool animated)
@@ -87,7 +80,6 @@ namespace InternalFunctionsNativeUI.iOS.Controls
 
         public override void ViewDidDisappear(bool animated)
         {
-
             // we're presenting a view controller from the menu, so we need to hide the menu so it isn't  g when the presented view is dismissed.
             if (!IsBeingDismissed)
             {
@@ -101,10 +93,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             base.ViewWillTransitionToSize(toSize, coordinator);
 
             // don't bother resizing if the view isn't visible
-            if (View.Hidden)
-            {
-                return;
-            }
+            if (View.Hidden) return;
 
             if (SideMenuManager.SideMenuTransition.StatusBarView != null)
             {
@@ -118,23 +107,15 @@ namespace InternalFunctionsNativeUI.iOS.Controls
         public override void PrepareForSegue(UIStoryboardSegue segue, NSObject sender)
         {
             var menuViewController = SideMenuManager.SideMenuTransition.PresentDirection == UIRectEdge.Left ? SideMenuManager.LeftNavigationController : SideMenuManager.RightNavigationController;
-            if (menuViewController != null)
-            {
-                var presentingViewController = menuViewController.PresentingViewController as UINavigationController;
-                if (presentingViewController != null)
-                    presentingViewController.PrepareForSegue(segue, sender: sender);
-            }
+            if (menuViewController?.PresentingViewController is UINavigationController presentingViewController)
+                presentingViewController.PrepareForSegue(segue, sender: sender);
         }
 
         public override bool ShouldPerformSegue(string segueIdentifier, NSObject sender)
         {
             var menuViewController = SideMenuManager.SideMenuTransition.PresentDirection == UIRectEdge.Left ? SideMenuManager.LeftNavigationController : SideMenuManager.RightNavigationController;
-            if (menuViewController != null)
-            {
-                var presentingViewController = menuViewController.PresentingViewController as UINavigationController;
-                if (presentingViewController != null)
-                    return presentingViewController.ShouldPerformSegue(segueIdentifier, sender: sender);
-            }
+            if (menuViewController?.PresentingViewController is UINavigationController presentingViewController)
+                return presentingViewController.ShouldPerformSegue(segueIdentifier, sender: sender);
 
             return base.ShouldPerformSegue(segueIdentifier, sender: sender);
         }

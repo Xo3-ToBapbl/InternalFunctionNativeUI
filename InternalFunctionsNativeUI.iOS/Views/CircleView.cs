@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Drawing;
-
 using CoreGraphics;
 using Foundation;
 using InternalFunctionsNativeUI.iOS.Extensions;
 using InternalFunctionsNativeUI.iOS.Utilities;
 using UIKit;
 
-namespace InternalFunctionsNativeUI.iOS.Views.PartialViews
+namespace InternalFunctionsNativeUI.iOS.Views
 {
     [Register("CircleView")]
     public class CircleView : UIView

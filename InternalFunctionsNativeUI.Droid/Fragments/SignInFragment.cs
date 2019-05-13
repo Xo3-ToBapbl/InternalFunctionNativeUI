@@ -1,24 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Util;
 using Android.Views;
 using Android.Widget;
 
-namespace InternalFunctionsNativeUI.Droid.Views
+namespace InternalFunctionsNativeUI.Droid.Fragments
 {
-    public class SignInView : Fragment
+    public class SignInFragment : Fragment
     {
         private Button _signInButton;
 
 
-        public SignInView() { }
+        public SignInFragment() { }
 
 
         public override void OnCreate(Bundle savedInstanceState)
@@ -42,8 +35,9 @@ namespace InternalFunctionsNativeUI.Droid.Views
         private void NavigateToMainMenuView(object sender, EventArgs e)
         {
             var fragmentTransaction = this.FragmentManager.BeginTransaction();
-            var mainMenuView = new MainMenuView();
+            var mainMenuView = new HomeFragment();
 
+            fragmentTransaction.SetCustomAnimations(Resource.Animator.slide_in_left, Resource.Animator.slide_out_left, Resource.Animator.slide_out_right, Resource.Animator.slide_in_right);
             fragmentTransaction.Replace(Resource.Id.main_container, mainMenuView);
             fragmentTransaction.Commit();
         }

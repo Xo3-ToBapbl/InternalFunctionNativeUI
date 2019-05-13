@@ -1,4 +1,7 @@
 ﻿using Foundation;
+using InternalFunctionsNativeUI.iOS.Extensions;
+using InternalFunctionsNativeUI.iOS.Utilities;
+using InternalFunctionsNativeUI.iOS.ViewControllers;
 using InternalFunctionsNativeUI.iOS.Views;
 using UIKit;
 
@@ -16,9 +19,14 @@ namespace InternalFunctionsNativeUI.iOS
 
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
+            var rootViewController = new UINavigationController(new SignInViewController());
+            rootViewController.NavigationBar.BarStyle = UIBarStyle.Black;
+            rootViewController.NavigationBar.BarTintColor = UIColor.Clear.FromHex(Colors.DarkBlue);
+            rootViewController.NavigationBar.TintColor = UIColor.Clear.FromHex(Colors.SemiWhite);
+
             Window = new UIWindow(UIScreen.MainScreen.Bounds)
             {
-                RootViewController = new UINavigationController(new SignInView())
+                RootViewController = rootViewController,
             };
 
             Window.MakeKeyAndVisible();

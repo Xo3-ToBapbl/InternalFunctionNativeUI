@@ -16,5 +16,9 @@ namespace InternalFunctionsNativeUI.iOS.Utilities
         public static int TextSizeCommon = 16;
         public static int TextSizeAdditional = 14;
         public static int TextSizeMicro = 12;
+
+        public static nfloat ButtonHeightCommon = 52f;
+        public static nfloat ButtonCornerRadiusCommon = 26f;
+        public static nfloat ButtonMarginCommon = 40f;
     }
 }

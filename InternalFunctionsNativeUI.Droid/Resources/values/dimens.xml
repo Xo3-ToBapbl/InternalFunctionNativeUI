@@ -16,4 +16,6 @@
   <dimen name="corner_radius_additional_button_size">21dp</dimen>
   <dimen name="height_additional_button_size">42dp</dimen>
 
+  <!--Constants-->
+  <dimen name="left_swipe_menu_width">200px</dimen>
 </resources>

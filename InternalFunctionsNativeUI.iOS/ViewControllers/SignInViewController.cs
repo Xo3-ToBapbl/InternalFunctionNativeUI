@@ -1,14 +1,14 @@
 ﻿using System;
-using CoreGraphics;
 using Foundation;
 using InternalFunctionsNativeUI.iOS.Extensions;
 using InternalFunctionsNativeUI.iOS.Utilities;
+using InternalFunctionsNativeUI.iOS.Views;
 using UIKit;
 
-namespace InternalFunctionsNativeUI.iOS.Views
+namespace InternalFunctionsNativeUI.iOS.ViewControllers
 {
-    [Register("SignInView")]
-    public class SignInView : UIViewController
+    [Register("SignInViewController")]
+    public class SignInViewController : UIViewController
     {
         private UILabel _appNameLabel;
         private UIImageView _logoImageView;
@@ -16,16 +16,23 @@ namespace InternalFunctionsNativeUI.iOS.Views
         private UIButton _signInButton;
 
 
-        public SignInView(){ }
+        public SignInViewController(){ }
 
 
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+
+            this.NavigationController.SetNavigationBarHidden(true, false);
+        }
+
+        public override void LoadView()
+        {
+            base.LoadView();
+
             this.CreateControls();
             this.AdjustControls();
 
-            NavigationController.SetNavigationBarHidden(true, false);
             View.BackgroundColor = UIColor.White;
             View.AddSubviews(_logoImageView, _appNameLabel, _signInButton);
 
@@ -45,26 +52,20 @@ namespace InternalFunctionsNativeUI.iOS.Views
             _appNameLabel.Text = Constants.AppName;
             _appNameLabel.TextColor = UIColor.Black;
             _appNameLabel.TextAlignment = UITextAlignment.Center;
-            _appNameLabel.TranslatesAutoresizingMaskIntoConstraints = false;
 
             _logoImageView.Image = _logoImage;
-            _logoImageView.TranslatesAutoresizingMaskIntoConstraints = false;
 
             _signInButton.BackgroundColor = UIColor.Clear.FromHex(Colors.LightAzure);
-            _signInButton.Layer.CornerRadius = 26f;
+            _signInButton.Layer.CornerRadius = Dimens.ButtonCornerRadiusCommon;
             _signInButton.SetTitle("Sign In", UIControlState.Normal);
             _signInButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-            _signInButton.TranslatesAutoresizingMaskIntoConstraints = false;
             _signInButton.TouchDown += SignInButtonOnTouchDown;
-        }
-
-        private void SignInButtonOnTouchDown(object sender, EventArgs e)
-        {
-            NavigationController.PushViewController(new MenuView(), true);
         }
 
         private void SetConstraints()
         {
+            DisableAutoresizingMasks();
+
             var constraints = new[]
             {
                 NSLayoutConstraint.Create(_logoImageView, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, View,NSLayoutAttribute.CenterY, 0.5f, 0f),
@@ -77,12 +78,25 @@ namespace InternalFunctionsNativeUI.iOS.Views
                 _appNameLabel.TopAnchor.ConstraintEqualTo(_logoImageView.BottomAnchor,10),
 
                 NSLayoutConstraint.Create(_signInButton, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, View, NSLayoutAttribute.CenterY, 1.5f, 0f),
-                _signInButton.HeightAnchor.ConstraintEqualTo(52f),
-                _signInButton.LeadingAnchor.ConstraintEqualTo(View.LeadingAnchor, 40f),
+                _signInButton.HeightAnchor.ConstraintEqualTo(Dimens.ButtonHeightCommon),
+                _signInButton.LeadingAnchor.ConstraintEqualTo(View.LeadingAnchor, Dimens.ButtonMarginCommon),
                 _signInButton.CenterXAnchor.ConstraintEqualTo(View.CenterXAnchor),
             };
 
             NSLayoutConstraint.ActivateConstraints(constraints);
+        }
+
+        private void DisableAutoresizingMasks()
+        {
+            foreach (var view in this.View)
+            {
+                ((UIView)view).TranslatesAutoresizingMaskIntoConstraints = false;
+            }
+        }
+
+        private void SignInButtonOnTouchDown(object sender, EventArgs e)
+        {
+            NavigationController.PushViewController(new HomeViewController(), true);
         }
     }
 }

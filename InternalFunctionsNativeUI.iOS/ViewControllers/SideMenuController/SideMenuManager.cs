@@ -9,8 +9,8 @@ namespace InternalFunctionsNativeUI.iOS.Controls
     {
         /* Example usage:
             // Define the menus
-            SideMenuManager.LeftNavigationController = storyboard!.instantiateViewControllerWithIdentifier("LeftMenuNavigationController") as? UISideMenuNavigationController
-            SideMenuManager.RightNavigationController = storyboard!.instantiateViewControllerWithIdentifier("RightMenuNavigationController") as? UISideMenuNavigationController
+            SideMenuManager.LeftNavigationController = storyboard!.instantiateViewControllerWithIdentifier("LeftMenuNavigationController") as? SideMenuNavigationController
+            SideMenuManager.RightNavigationController = storyboard!.instantiateViewControllerWithIdentifier("RightMenuNavigationController") as? SideMenuNavigationController
             // Enable gestures. The left and/or right menus must be set up above for these to work.
             // Note that these continue to work on the Navigation Controller independent of the View Controller it displays!
             SideMenuManager.menuAddPanGestureToPresent(toView: self.navigationController!.navigationBar)
@@ -19,10 +19,12 @@ namespace InternalFunctionsNativeUI.iOS.Controls
 
         public SideMenuTransition SideMenuTransition { get; set; }
 
+
         public SideMenuManager()
         {
             SideMenuTransition = new SideMenuTransition(this);
         }
+
 
         public enum MenuPresentMode
         {
@@ -30,7 +32,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
         }
 
         // Bounds which has been allocated for the app on the whole device screen
-        public CGRect appScreenRect
+        public CGRect AppScreenRect
         {
             get
             {
@@ -63,15 +65,13 @@ namespace InternalFunctionsNativeUI.iOS.Controls
         {
             get
             {
-				if(_menuWidth == default(double))
-					_menuWidth = Math.Max(Math.Round(Math.Min((appScreenRect.Width), (appScreenRect.Height)) * 0.75), 240);
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if(_menuWidth == default(double))
+					_menuWidth = Math.Max(Math.Round(Math.Min((AppScreenRect.Width), (AppScreenRect.Height)) * 0.75), 240);
 
 				return _menuWidth;
             }
-			set 
-			{
-				_menuWidth = value;
-			}
+			set => _menuWidth = value;
         }
 
         /// Duration of the animation when the menu is presented without gestures. Default is 0.35 seconds.
@@ -113,14 +113,8 @@ namespace InternalFunctionsNativeUI.iOS.Controls
         /// - Warning: Deprecated. Use `menuAnimationTransformScaleFactor` instead.
         public double AnimationShrinkStrength
         {
-            get
-            {
-                return AnimationTransformScaleFactor;
-            }
-            set
-            {
-                AnimationTransformScaleFactor = value;
-            }
+            get => AnimationTransformScaleFactor;
+            set => AnimationTransformScaleFactor = value;
         }
 
         /**
@@ -130,7 +124,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
          */
         private UIBlurEffectStyle? _blurEffectStyle;
         public UIBlurEffectStyle? BlurEffectStyle {
-            get { return _blurEffectStyle; }
+            get => _blurEffectStyle;
             set {
                 if (value != _blurEffectStyle) {
                     _blurEffectStyle = value;
@@ -140,10 +134,10 @@ namespace InternalFunctionsNativeUI.iOS.Controls
         }
 
         /// The left menu.
-        private UISideMenuNavigationController _leftNavigationController;
-        public UISideMenuNavigationController LeftNavigationController
+        private SideMenuNavigationController _leftNavigationController;
+        public SideMenuNavigationController LeftNavigationController
         {
-            get { return _leftNavigationController; }
+            get => _leftNavigationController;
             set
             {
                 if (_leftNavigationController?.PresentingViewController == null)
@@ -163,10 +157,10 @@ namespace InternalFunctionsNativeUI.iOS.Controls
         }
 
         /// The right menu.
-        private UISideMenuNavigationController _rightNavigationController;
-        public UISideMenuNavigationController RightNavigationController
+        private SideMenuNavigationController _rightNavigationController;
+        public SideMenuNavigationController RightNavigationController
         {
-            get { return _rightNavigationController; }
+            get => _rightNavigationController;
             set
             {
                 if (_rightNavigationController?.PresentingViewController == null)
@@ -185,7 +179,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             }
         }
 
-		void SetupNavigationController(UISideMenuNavigationController forMenu, bool leftSide)
+		void SetupNavigationController(SideMenuNavigationController forMenu, bool leftSide)
         {
             if (forMenu == null)
                 return;
@@ -216,15 +210,13 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                 SetupMenuBlurForMenu(RightNavigationController);
         }
 
-		void SetupMenuBlurForMenu(UISideMenuNavigationController forMenu)
+		void SetupMenuBlurForMenu(SideMenuNavigationController forMenu)
         {
 			RemoveMenuBlurForMenu(forMenu);
 
             var view = forMenu.VisibleViewController?.View;
 
-            if (forMenu == null ||
-                view == null ||
-                UIKit.UIAccessibility.IsReduceTransparencyEnabled)
+            if (view == null || UIKit.UIAccessibility.IsReduceTransparencyEnabled)
             {
                 return;
             }
@@ -240,8 +232,7 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             var blurEffect = UIBlurEffect.FromStyle(BlurEffectStyle.Value);
             var blurView = new UIVisualEffectView(blurEffect);
             view.BackgroundColor = UIColor.Clear;
-            var tableViewController = forMenu.VisibleViewController as UITableViewController;
-            if (tableViewController != null)
+            if (forMenu.VisibleViewController is UITableViewController tableViewController)
             {
                 tableViewController.TableView.BackgroundView = blurView;
                 tableViewController.TableView.SeparatorEffect = UIVibrancyEffect.FromBlurEffect(blurEffect);
@@ -255,16 +246,14 @@ namespace InternalFunctionsNativeUI.iOS.Controls
             }
         }
 
-        void RemoveMenuBlurForMenu(UISideMenuNavigationController forMenu)
+        void RemoveMenuBlurForMenu(SideMenuNavigationController forMenu)
         {
             if (forMenu == null)
                 return;
 
             var originalMenuBackgroundColor = forMenu.OriginalMenuBackgroundColor;
             var view = forMenu.VisibleViewController?.View;
-            if (forMenu == null ||
-                    originalMenuBackgroundColor == null ||
-                    view == null)
+            if (originalMenuBackgroundColor == null ||view == null)
             {
                 return;
             }
@@ -280,9 +269,9 @@ namespace InternalFunctionsNativeUI.iOS.Controls
                 tableViewController.TableView.SeparatorEffect = null;
                 tableViewController.TableView.ReloadData();
             }
-            else if (blurView != null)
+            else
             {
-                blurView.RemoveFromSuperview();
+                blurView?.RemoveFromSuperview();
             }
         }
 

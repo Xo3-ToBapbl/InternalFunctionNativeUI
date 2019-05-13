@@ -20,7 +20,7 @@
 
 		<Button
 			android:id="@+id/add_activity_button"
-			android:text="Add Activity"
+			android:text="Previous Activities"
 			android:minHeight="@dimen/height_common_button_size"
 			android:textSize="@dimen/text_size_hint"
 			android:background="@drawable/rounded_background_common_button"
@@ -42,7 +42,7 @@
         android:fitsSystemWindows="true"
 		android:background="@android:color/holo_green_dark">
 
-		<include layout="@layout/main_menu_navigation_layout"/>
+		<include layout="@layout/side_menu_layout"/>
 
 	</android.support.design.widget.NavigationView>
 
