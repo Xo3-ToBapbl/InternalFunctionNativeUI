@@ -17,6 +17,7 @@ namespace InternalFunctionsNativeUI.Droid.RecycleUtilities
     public class ActivitiesAdapter : RecyclerView.Adapter
     {
         public IList<ActivityModel> Activities { get; private set; }
+        public event EventHandler<int> ItemTouch;
 
 
         public ActivitiesAdapter(IList<ActivityModel> activities)
@@ -35,9 +36,11 @@ namespace InternalFunctionsNativeUI.Droid.RecycleUtilities
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
         {
             var container = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.activities_item_layout, parent, false);
-            return new ActivitiesViewHolder(container);
+            return new ActivitiesViewHolder(container, OnItemTouch);
         }
 
         public override int ItemCount => Activities.Count;
+
+        private void OnItemTouch(int position) => ItemTouch?.Invoke(this, position);
     }
 }
