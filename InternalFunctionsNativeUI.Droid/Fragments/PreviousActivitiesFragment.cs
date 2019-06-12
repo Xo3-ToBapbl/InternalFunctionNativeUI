@@ -33,7 +33,7 @@ namespace InternalFunctionsNativeUI.Droid.Fragments
             _toolbar = Activity.FindViewById<Toolbar>(Resource.Id.navigationBar);
             _activitiesRecycleView = Activity.FindViewById<RecyclerView>(Resource.Id.activitiesView);
             var activitiesAdapter = new ActivitiesAdapter(DataService.GetActivities());
-            var activitiesTouchHelper = new ItemTouchHelper(new ActivitiesSwipeCallback(_activitiesRecycleView, activitiesAdapter));
+            var activitiesTouchHelper = new ItemTouchHelper(new ActivitiesSwipeCallback(_activitiesRecycleView));
             activitiesTouchHelper.AttachToRecyclerView(_activitiesRecycleView);
 
             _activity.SetSupportActionBar(_toolbar);

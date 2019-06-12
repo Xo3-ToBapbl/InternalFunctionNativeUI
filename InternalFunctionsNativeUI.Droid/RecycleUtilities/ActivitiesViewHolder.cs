@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using Android.Animation;
 using Android.App;
-using Android.Content;
-using Android.OS;
 using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Views;
@@ -15,8 +10,13 @@ namespace InternalFunctionsNativeUI.Droid.RecycleUtilities
 {
     public class ActivitiesViewHolder : RecyclerView.ViewHolder
     {
-        private Action<int> _listener;
+        private float _menuWidth;
+        private ActivitiesAdapter _adapter;
 
+        public float CurrentX { get; set; }
+        public float CurrentY { get; set; }
+        public bool IsViewMovingInactively { get; set; }
+        public bool IsMenuActive { get; set; }
         public TextView TitleTextView { get; private set; }
         public TextView DescriptionTextView { get; private set; }
         public View ForegroundView { get; private set; }
@@ -27,20 +27,66 @@ namespace InternalFunctionsNativeUI.Droid.RecycleUtilities
         public ActivitiesViewHolder(IntPtr javaReference, JniHandleOwnership transfer) : 
             base(javaReference, transfer) { }
 
-        public ActivitiesViewHolder(View itemView, Action<int> listener) : 
+        public ActivitiesViewHolder(View itemView, ActivitiesAdapter adapter) : 
             base(itemView)
         {
-            _listener = listener ?? throw new ArgumentNullException(nameof(listener));
+            _adapter = adapter;
+            _menuWidth = Application.Context.Resources.GetDimension(Resource.Dimension.left_swipe_menu_width);
 
-            TitleTextView = itemView.FindViewById<TextView>(Resource.Id.titleTextView);
-            DescriptionTextView = itemView.FindViewById<TextView>(Resource.Id.descriptionTextView);
-            ForegroundView = itemView.FindViewById(Resource.Id.foregroundView);
-            BackgroundView = itemView.FindViewById(Resource.Id.backgroundView);
-            DeleteButton = itemView.FindViewById<Button>(Resource.Id.activityDeleteButton);
+            TitleTextView = ItemView.FindViewById<TextView>(Resource.Id.titleTextView);
+            DescriptionTextView = ItemView.FindViewById<TextView>(Resource.Id.descriptionTextView);
+            ForegroundView = ItemView.FindViewById(Resource.Id.foregroundView);
+            BackgroundView = ItemView.FindViewById(Resource.Id.backgroundView);
+            DeleteButton = ItemView.FindViewById<Button>(Resource.Id.activityDeleteButton);
 
-            itemView.Touch += ItemViewTouched;
+            ItemView.Touch += ItemViewTouched;
         }
 
+
+        public void UpdateMenuVisibility()
+        {
+            IsMenuActive = Math.Abs(CurrentX) > _menuWidth;
+            
+            if (IsMenuActive)
+            {
+                DeleteButton.Click += DeleteButtonClicked;
+            }
+            else
+            {
+                DeleteButton.Click -= DeleteButtonClicked;
+            }
+        }
+
+        private void DeleteButtonClicked(object sender, EventArgs e)
+        {
+            MoveForegroundViewTo(0, 75, () => 
+            {
+                IsMenuActive = false;
+                DeleteButton.Click -= DeleteButtonClicked;
+
+                _adapter.RemoveAt(LayoutPosition);
+            });
+        }
+
+        public void Reset(bool immediately=false)
+        {
+            if (immediately)
+                MoveForegroundViewTo(0, 0);
+
+            DeleteButton.Click -= DeleteButtonClicked;
+            IsMenuActive = false;
+            MoveForegroundViewTo(0);
+        }
+
+        public void MoveForegroundViewTo(float translationX, long duration=125, Action endAction=null)
+        {
+            IsViewMovingInactively = true;
+
+            var animator = ObjectAnimator.OfFloat(ForegroundView, nameof(View.TranslationX), translationX);
+            animator.AnimationEnd += (s, e) => { IsViewMovingInactively = false; endAction?.Invoke(); };
+            animator.SetDuration(duration);
+            animator.Start();
+        }
 
         public void SetBackgroundVisibility(ViewStates viewState)
         {
@@ -50,9 +96,16 @@ namespace InternalFunctionsNativeUI.Droid.RecycleUtilities
             }
         }
 
-        private void ItemViewTouched(object sender, EventArgs e)
+        private void ItemViewTouched(object sender, EventArgs e) { }
+
+        protected override void Dispose(bool disposing)
         {
-            _listener.Invoke(base.LayoutPosition);
+            if (disposing)
+            {
+                ItemView.Touch -= ItemViewTouched;
+            }
+
+            base.Dispose(disposing);
         }
     }
 }
