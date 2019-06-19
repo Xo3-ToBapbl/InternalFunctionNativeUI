@@ -8,5 +8,6 @@
         public const int DarkBlue = 0x3C4A61;
         public const int SemiWhite = 0xF9F9FA;
         public const int DarkAzure = 0x528c93;
+        public const int DarkRed = 0xCC0000;
     }
 }

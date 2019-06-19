@@ -22,7 +22,7 @@ namespace InternalFunctionsNativeUI.iOS.Views
         }
 
 
-        void Initialize()
+        private void Initialize()
         {
             BackgroundColor = UIColor.Clear;
         }

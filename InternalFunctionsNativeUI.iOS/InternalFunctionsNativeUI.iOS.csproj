@@ -65,7 +65,8 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ViewControllers\PreviousActivitiesViewController.cs" />
+    <Compile Include="ViewControllers\PreviousActivitiesController\ActivitiesTableSource.cs" />
+    <Compile Include="ViewControllers\PreviousActivitiesController\PreviousActivitiesViewController.cs" />
     <Compile Include="ViewControllers\SideMenuController\SideMenuManager.cs" />
     <Compile Include="ViewControllers\SideMenuController\SideMenuTransition.cs" />
     <Compile Include="ViewControllers\SideMenuController\SideMenuNavigationController.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Utilities\Dimens.cs" />
     <Compile Include="ViewControllers\HomeViewController.cs" />
     <Compile Include="ViewControllers\SideMenuViewController.cs" />
+    <Compile Include="Views\ActivtiesViewCell.cs" />
     <Compile Include="Views\CircleView.cs" />
     <Compile Include="ViewControllers\SignInViewController.cs" />
     <BundleResource Include="Resources\Images\cancelDark.png" />
