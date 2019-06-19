@@ -3,12 +3,14 @@
     public static class Constants
     {
         public const string AppName = "Internal Functions Mobile";
+        public const string ActivitiesCellIdentifier = "ActivitiesCellId";
 
         public static class Paths
         {
             public static class Images
             {
                 public const string GodelLogoLight = "Images/godelLogoLightTheme.png";
+                public const string PaidLight = "Images/paidLight.png";
             }
         }
     }
