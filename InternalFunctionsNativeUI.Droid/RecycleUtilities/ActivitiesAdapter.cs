@@ -1,15 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Views;
-using Android.Widget;
 using InternalFunctionNativeUI.Core.Models;
 
 namespace InternalFunctionsNativeUI.Droid.RecycleUtilities
@@ -25,6 +17,15 @@ namespace InternalFunctionsNativeUI.Droid.RecycleUtilities
         }
 
 
+        public override int ItemCount => Activities.Count;
+
+        public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            var container = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.activities_item_layout, parent, false);
+
+            return new ActivitiesViewHolder(container, this);
+        }
+
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
             var activitiesViewHolder = (ActivitiesViewHolder)holder;
@@ -32,12 +33,18 @@ namespace InternalFunctionsNativeUI.Droid.RecycleUtilities
             activitiesViewHolder.DescriptionTextView.Text = Activities[position].Description;
         }
 
-        public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
+        public override void OnViewRecycled(Java.Lang.Object holder)
         {
-            var container = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.activities_item_layout, parent, false);
-            return new ActivitiesViewHolder(container);
+            var activitiesViewHolder = holder as ActivitiesViewHolder;
+            activitiesViewHolder.Reset(true);
+
+            base.OnViewRecycled(holder);
         }
 
-        public override int ItemCount => Activities.Count;
+        public void RemoveAt(int position)
+        {
+            Activities.RemoveAt(position);
+            NotifyItemRemoved(position);
+        }
     }
 }

@@ -1,47 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
+﻿using Android.App;
 using Android.Graphics;
-using Android.OS;
-using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Support.V7.Widget.Helper;
-using Android.Views;
-using Android.Widget;
-using InternalFunctionNativeUI.Core.Interfaces;
-using InternalFunctionNativeUI.Core.Services;
 
 namespace InternalFunctionsNativeUI.Droid.RecycleUtilities
 {
     public class ActivitiesSwipeCallback : ItemTouchHelper.Callback
     {
-        private readonly float _menuWidth;
-        private readonly ILogger _logger;
-        public float X;
+        private float _menuWidth;
 
+        public ActivitiesViewHolder CurrentViewHolder { get; private set; }
         public bool ShouldSwipeBack { get; set; }
-        public bool IsMenuActive { get; set; }
 
+
+        static ActivitiesSwipeCallback() { }
 
         public ActivitiesSwipeCallback(RecyclerView recyclerView)
         {
             recyclerView.SetOnTouchListener(new ActivitiesTouchListener(this));
-            _logger = DependencyService.Get<ILogger>();
+
             _menuWidth = Application.Context.Resources.GetDimension(Resource.Dimension.left_swipe_menu_width);
         }
 
 
         public override int GetMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
         {
-            //_logger.LogToView("CallBac", nameof(GetMovementFlags));
-
-            return IsMenuActive ? MakeMovementFlags(0, ItemTouchHelper.Left | ItemTouchHelper.Right) :
-                                  MakeMovementFlags(0, ItemTouchHelper.Left);
+            return CurrentViewHolder != null && CurrentViewHolder.IsMenuActive ? 
+                   MakeMovementFlags(0, ItemTouchHelper.Left | ItemTouchHelper.Right) :
+                   MakeMovementFlags(0, ItemTouchHelper.Left);
         }
 
         public override bool OnMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
@@ -49,106 +35,72 @@ namespace InternalFunctionsNativeUI.Droid.RecycleUtilities
             return false;
         }
 
-        public override void OnSwiped(RecyclerView.ViewHolder viewHolder, int direction)
-        {
-        }
+        public override void OnSwiped(RecyclerView.ViewHolder viewHolder, int direction) { }
 
         public override int ConvertToAbsoluteDirection(int flags, int layoutDirection)
         {
-            var result = base.ConvertToAbsoluteDirection(flags, layoutDirection);
-            //_logger.LogToView("CallBack", "AbsDirection", $"Flags={flags} Dir={layoutDirection} Res={result}");
-
             if (ShouldSwipeBack)
             {
                 ShouldSwipeBack = false;
                 return 0;
             }
 
-            return result;
+            return base.ConvertToAbsoluteDirection(flags, layoutDirection);
         }
 
         public override void OnChildDraw(Canvas canvas, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, bool isCurrentlyActive)
         {
+            var currentViewHolder = viewHolder as ActivitiesViewHolder;
+            if (CurrentViewHolder != null &&
+                CurrentViewHolder.LayoutPosition != currentViewHolder.LayoutPosition)
+            {
+                CurrentViewHolder.Reset();
+            }
+            CurrentViewHolder = currentViewHolder;
+            CurrentViewHolder.CurrentX = dX;
+            CurrentViewHolder.CurrentY = dY;
+
             if (actionState == ItemTouchHelper.ActionStateSwipe)
             {
                 if (isCurrentlyActive)
                 {
-                    HandleActiveSwipe(recyclerView, canvas, (ActivitiesViewHolder)viewHolder, dX, dY, actionState);
+                    HandleActiveSwipe(recyclerView, canvas, CurrentViewHolder, actionState);
                 }
                 else
                 {
-                    HandleInactiveSwipe(recyclerView, canvas, (ActivitiesViewHolder)viewHolder, dX, dY, actionState);
+                    HandleInactiveSwipe(CurrentViewHolder);
                 }
             }
         }
 
-        private void HandleActiveSwipe(RecyclerView recyclerView, Canvas canvas, ActivitiesViewHolder viewHolder, float dX, float dY, int actionState)
+        private void HandleActiveSwipe(RecyclerView recyclerView, Canvas canvas, ActivitiesViewHolder viewHolder, int actionState)
         {
-            if (IsMenuActive)
-            {
-                if (dX <= 0)
-                {
-                    X = dX - _menuWidth;
-                    DefaultUIUtil.OnDraw(canvas, recyclerView, viewHolder.ForegroundView, X, dY, actionState, true);
+            viewHolder.CurrentX = viewHolder.IsMenuActive ? 
+                                 (viewHolder.CurrentX - _menuWidth >= 0 ? 0 : viewHolder.CurrentX - _menuWidth) : 
+                                 (viewHolder.CurrentX >= 0 ? 0 : viewHolder.CurrentX);
 
-                    //_logger.LogToView("CallBack", "ActiveSwipe", $"X={X:0.00} dX={dX:0.00} Menu={IsMenuActive}");
-                }
-                else
-                {
-                    X = (dX - _menuWidth) >= 0 ? 0 : dX - _menuWidth;
-                    DefaultUIUtil.OnDraw(canvas, recyclerView, viewHolder.ForegroundView, X, dY, actionState, true);
-
-                    //_logger.LogToView("CallBack", "ActiveSwipe", $"X={X:0.00} dX={dX:0.00} Menu={IsMenuActive}");
-                }
-            }
-            else
-            {
-                X = dX;
-                DefaultUIUtil.OnDraw(canvas, recyclerView, viewHolder.ForegroundView, X, dY, actionState, true);
-
-                //_logger.LogToView("CallBack", "ActiveSwipe", $"X={X:0.00} dX={dX:0.00} Menu={IsMenuActive}");
-            }
-            
-
+            DefaultUIUtil.OnDraw(c: canvas,
+                                 recyclerView: recyclerView,
+                                 view: viewHolder.ForegroundView, 
+                                 dX: viewHolder.CurrentX,
+                                 dY: viewHolder.CurrentY, 
+                                 actionState: actionState, 
+                                 isCurrentlyActive: true);
         }
 
-        private void HandleInactiveSwipe(RecyclerView recyclerView, Canvas canvas, ActivitiesViewHolder viewHolder, float dX, float dY, int actionState)
+        private void HandleInactiveSwipe(ActivitiesViewHolder viewHolder)
         {
-            if (IsMenuActive)
-            {
-                X = Math.Min(dX, -_menuWidth);
-                DefaultUIUtil.OnDraw(canvas, recyclerView, viewHolder.ForegroundView, X, dY, actionState, false);
+            viewHolder.CurrentX = viewHolder.IsMenuActive ? -_menuWidth : 0;
 
-                //_logger.LogToView("CallBack", "InActiveSwipe", $"X={X:0.00} dX={dX:0.00} Menu={IsMenuActive}");
-            }
-            else
+            if (!viewHolder.IsViewMovingInactively)
             {
-                if (dX <= 0)
-                {
-                    X = dX;
-                    DefaultUIUtil.OnDraw(canvas, recyclerView, viewHolder.ForegroundView, X, dY, actionState, false);
-                    //_logger.LogToView("CallBack", "InActiveSwipe", $"X={X:0.00} dX={dX:0.00} Menu={IsMenuActive}");
-                }
-                else
-                {
-                    X = Math.Max(X, -dX);
-                    DefaultUIUtil.OnDraw(canvas, recyclerView, viewHolder.ForegroundView, X, dY, actionState, false);
-                   // _logger.LogToView("CallBack", "InActiveSwipe", $"X={X:0.00} dX={dX:0.00} Menu={IsMenuActive}");
-                }
+                viewHolder.MoveForegroundViewTo(viewHolder.CurrentX);
             }
         }
 
-        public bool UpdateMenuActivity()
+        protected override void Dispose(bool disposing)
         {
-            IsMenuActive = Math.Abs(X) >= _menuWidth;
-            //_logger.LogToView("CallBack", nameof(UpdateMenuActivity), $"X={X:0.00} Menu={IsMenuActive}");
-            return IsMenuActive;
-        }
-
-        public override void ClearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
-        {
-            base.ClearView(recyclerView, viewHolder);
-            UpdateMenuActivity();
+            base.Dispose(disposing);
         }
     }
 }

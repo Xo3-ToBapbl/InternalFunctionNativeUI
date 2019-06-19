@@ -13,12 +13,17 @@ using InternalFunctionNativeUI.Core.Interfaces;
 
 namespace InternalFunctionsNativeUI.Droid.Services
 {
-    public class LogService : ILogger
+    public static class Logger
     {
-        public void LogToView(string type, string methodName, string message = "")
+        public static void ToView(string type, string methodName, string message = "")
         {
             string text = $"\n{DateTime.Now.Millisecond} {type} {methodName} {message}";
             MainActivity.Instance.LogView.Append(text);
+        }
+
+        public static void ToView(string message)
+        {
+            ToView(string.Empty, string.Empty, message);
         }
     }
 }

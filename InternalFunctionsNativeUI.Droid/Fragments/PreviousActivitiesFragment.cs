@@ -32,6 +32,7 @@ namespace InternalFunctionsNativeUI.Droid.Fragments
             _activity = (AppCompatActivity)Activity;
             _toolbar = Activity.FindViewById<Toolbar>(Resource.Id.navigationBar);
             _activitiesRecycleView = Activity.FindViewById<RecyclerView>(Resource.Id.activitiesView);
+            var activitiesAdapter = new ActivitiesAdapter(DataService.GetActivities());
             var activitiesTouchHelper = new ItemTouchHelper(new ActivitiesSwipeCallback(_activitiesRecycleView));
             activitiesTouchHelper.AttachToRecyclerView(_activitiesRecycleView);
 
@@ -43,7 +44,7 @@ namespace InternalFunctionsNativeUI.Droid.Fragments
 
             _activitiesRecycleView.AddItemDecoration(new DividerItemDecoration(_activitiesRecycleView.Context, DividerItemDecoration.Vertical));
             _activitiesRecycleView.SetLayoutManager(new LinearLayoutManager(_activity));
-            _activitiesRecycleView.SetAdapter(new ActivitiesAdapter(DataService.GetActivities()));
+            _activitiesRecycleView.SetAdapter(activitiesAdapter);
         }
 
         private void OnNavigationClick(object sender, Toolbar.NavigationClickEventArgs e)

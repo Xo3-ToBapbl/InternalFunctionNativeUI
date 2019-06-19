@@ -46,7 +46,6 @@ namespace InternalFunctionsNativeUI.Droid
 
         private void SetDependency()
         {
-            DependencyService.Register<ILogger, LogService>();
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item) => false;

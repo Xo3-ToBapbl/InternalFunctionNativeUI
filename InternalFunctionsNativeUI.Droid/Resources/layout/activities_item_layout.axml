@@ -10,12 +10,14 @@
 		android:id="@+id/backgroundView"
 		android:layout_width="@dimen/left_swipe_menu_width"
 		android:layout_height="match_parent"
-		android:visibility="visible"
+        android:visibility="visible"
 		app:layout_constraintRight_toRightOf="parent">
 
 		<Button 
+            android:id="@+id/activityDeleteButton"
 			android:background="@android:color/holo_red_dark"
 			android:text="Delete"
+            android:visibility="visible"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"/>
 	</LinearLayout>
